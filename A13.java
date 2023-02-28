@@ -29,7 +29,7 @@ public class A13 {
             case '!' -> {return 3;}
             case '&' -> {return 2;}
             case '|' -> {return 1;}
-            case '^' -> {return 0;}
+            case '^' -> {return 1;}
             default -> {
                 throw new IllegalArgumentException("functionWeight function collapsed <- for dev");
             }
@@ -45,53 +45,88 @@ public class A13 {
         }
     }
 
-    public static int evaluater(String expression) {
-        if (expression.length() == 1) {
-            return Character.valueOf(expression.charAt(0));
-        }
-        int bracketFlag = 0;
-        if (expression.length() == 2) {
-            if (expression.charAt(1) == '0') {
-                return 1;
-            } else {
-                return 0;
+    public static boolean areThereOBrackets(String str) {
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == '(') {
+                return true;
             }
         }
-        if (expression.charAt(0) == '(' && expression.charAt(expression.length()-1) == ')') {
-            bracketFlag = 1;
+        return false;
+    }
+
+    public static int evaluaterWithNoBrackets(String expression) {
+        if (expression.length() == 1) {
+            return Character.getNumericValue(expression.charAt(0));
         }
         int indexOfLeastWeightedFun = 0;
-        char leastWfunction = ' ';
+        char leastWFunction = ' ';
         int leastFunctionWeight = Integer.MAX_VALUE;
-        for (int i = expression.length()-bracketFlag-1; i >= 0; i--) {
+        for (int i = 0; i < expression.length(); i++) {
             if (isFunction(expression.charAt(i)) && functionWeight(expression.charAt(i)) <= leastFunctionWeight) {
                 indexOfLeastWeightedFun = i;
-                leastWfunction = expression.charAt(i);
+                leastWFunction = expression.charAt(i);
                 leastFunctionWeight = functionWeight(expression.charAt(i));
             }
         }
-        final boolean rightExpressionEvaluated = intToBool(evaluater(expression.substring(indexOfLeastWeightedFun + 1, expression.length() - bracketFlag)));
-        final boolean leftExpressionEvaluated= intToBool(evaluater(expression.substring(bracketFlag, indexOfLeastWeightedFun)));
+        final boolean rightExpressionEvaluated = intToBool(evaluaterWithNoBrackets(expression.substring(indexOfLeastWeightedFun + 1)));
 
-        switch (leastWfunction) {
+
+        switch (leastWFunction) {
             case '!' -> {
-                if (evaluater(expression.substring(1)) == 1) {
+                if (evaluaterWithNoBrackets(expression.substring(1)) == 1) {
                     return 0;
                 } else {
                     return 1;
                 }
             }
             case '&' -> {
-                return  boolToInt(leftExpressionEvaluated && rightExpressionEvaluated);
+                final boolean leftExpressionEvaluated = intToBool(evaluaterWithNoBrackets(expression.substring(0, indexOfLeastWeightedFun)));
+                return boolToInt(leftExpressionEvaluated && rightExpressionEvaluated);
             }
             case '|' -> {
-                return  boolToInt(leftExpressionEvaluated | rightExpressionEvaluated);
+                final boolean leftExpressionEvaluated = intToBool(evaluaterWithNoBrackets(expression.substring(0, indexOfLeastWeightedFun)));
+                return boolToInt(leftExpressionEvaluated | rightExpressionEvaluated);
             }
             case '^' -> {
-                return  boolToInt(leftExpressionEvaluated ^ rightExpressionEvaluated);
+                final boolean leftExpressionEvaluated = intToBool(evaluaterWithNoBrackets(expression.substring(0, indexOfLeastWeightedFun)));
+                return boolToInt(leftExpressionEvaluated ^ rightExpressionEvaluated);
             }
         }
-        return -99999999;
+        return -99999;
+    }
+
+    public static int evaluater(String expression) {
+        if (expression.length() == 1) {
+            return Character.getNumericValue(expression.charAt(0));
+        }
+        if (areThereOBrackets(expression)) {
+            StringBuilder expressionWithoutBrackets = new StringBuilder();
+            for (int i = 0; i < expression.length(); i++) {
+                if (expression.charAt(i) == '(') {
+                    StringBuilder sb = new StringBuilder();
+                    int ObracketCounter = 1;
+                    int CbracketCounter = 0;
+                    i++;
+                    while (ObracketCounter != CbracketCounter) {
+                        if (expression.charAt(i) == '(') {
+                            ObracketCounter++;
+                        } else if (expression.charAt(i) == ')') {
+                            CbracketCounter++;
+                        }
+                        sb.append(expression.charAt(i));
+                        i++;
+                    }
+                    sb.deleteCharAt(sb.length()-1);
+                    i--;
+                    expressionWithoutBrackets.append(evaluater(sb.toString()));
+                } else {
+                    expressionWithoutBrackets.append(expression.charAt(i));
+                }
+            }
+            return evaluaterWithNoBrackets(expressionWithoutBrackets.toString());
+        } else {
+            return evaluaterWithNoBrackets(expression);
+        }
 
     }
 
