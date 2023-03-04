@@ -45,7 +45,7 @@ public class A12 {
         return true;
     }
 
-
+//1+(7+8)-(3-4*5)*(2*4)+(9)-(16728)*(123*9+2)+((2))
     public static int functionWeight(char ch) {
         switch (ch) {
             case '*' -> {return 2;}
@@ -189,10 +189,10 @@ public class A12 {
     }
 
     public static int mainFunc(String expression) {
-        if (checkExpressionOnBeingParsable(expression)) {
+//        if (checkExpressionOnBeingParsable(expression)) {
             return evaluater(expression);
-        }
-        return -99999999;
+//        }
+//        return -99999999;
     }
 
     public static void main(String[] args) {
