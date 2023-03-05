@@ -1,8 +1,5 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.io.*;
+import java.util.*;
 
 public class A16 {
 
@@ -18,67 +15,45 @@ public class A16 {
         return ret;
     }
 
-    public static int[] simpleMin(Integer[] array) {
-        int min = Integer.MAX_VALUE;
-        int minIndex = 0;
-        for (int i = 0; i < array.length; i++) {
-            if (min > array[i]) {
-                min = array[i];
-                minIndex = i;
-            }
-        }
-        return new int[]{min, minIndex}; // the first is the number, second is an index
-    }
-
     public static void main(String[] args) {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+                int[] nk = toIntArr(reader.readLine());
+                int n = nk[0];
+                int k = nk[1];
 
-            int[] nk = toIntArr(reader.readLine());
-            int n = nk[0];
-            int k = nk[1];
+                int[] sequence = toIntArr(reader.readLine());
 
-            int[] sequence = toIntArr(reader.readLine());
+                TreeSet<Integer> set = new TreeSet<>();
+                Map<Integer, Integer> map = new HashMap<>();
 
-            Deque<Integer> deque = new ArrayDeque<>();
-
-            for (int i = 0; i < k; i++) {
-                deque.addLast(sequence[i]);
-            }
-            int[] helper = simpleMin(deque.toArray(new Integer[0]));
-            int minInWinIndex = helper[1];
-            int minInWindow = helper[0];
-            System.out.println(minInWindow);
-            int indexOfTheWindow = 1;
-            int toCompare;
-
-            for (int i = k; i < n; i++) {
-                deque.removeFirst();
-                toCompare = sequence[i];
-                if (indexOfTheWindow > minInWinIndex) {
-                    deque.addLast(toCompare);
-                    if (toCompare <= minInWindow) {
-                        System.out.println(toCompare);
-                        minInWinIndex = i;
-                        minInWindow = toCompare;
+                for (int i = 0; i < k; i++) {
+                    set.add(sequence[i]);
+                    if (map.containsKey(sequence[i])) {
+                        map.put(sequence[i], map.get(sequence[i]) + 1);
                     } else {
-                        helper = simpleMin(deque.toArray(new Integer[0]));
-                        minInWinIndex = helper[1] + indexOfTheWindow;
-                        minInWindow = helper[0];
-                        System.out.println(minInWindow);
-                    }
-                } else {
-                    deque.addLast(toCompare);
-                    if (toCompare < minInWindow) {
-                        System.out.println(toCompare);
-                        minInWinIndex = i;
-                        minInWindow = toCompare;
-                    } else {
-                        System.out.println(minInWindow);
+                        map.put(sequence[i], 1);
                     }
                 }
-                indexOfTheWindow++;
-            }
+
+                System.out.println(set.first());
+                for (int i = k; i < n; i++) {
+                    int toRemove = sequence[i - k];
+                    if (map.get(toRemove) == 1) {
+                        map.remove(toRemove);
+                        set.remove(toRemove);
+                    } else {
+                        map.put(toRemove, map.get(toRemove) - 1);
+                    }
+                    set.add(sequence[i]);
+                    if (map.containsKey(sequence[i])) {
+                        map.put(sequence[i], map.get(sequence[i]) + 1);
+                    } else {
+                        map.put(sequence[i], 1);
+                    }
+                    System.out.println(set.first());
+
+                }
 
         } catch (IOException e) {
             System.out.println("Exception during reading the input" + e.getMessage());

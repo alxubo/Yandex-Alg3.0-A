@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 public class A12 {
 
@@ -11,45 +10,53 @@ public class A12 {
 
         for (int i = 0; i < expession.length(); i++) {
             char token = expession.charAt(i);
-             switch (token) {
-                 case ' ' ->  {
-                     continue;
-                 }
-                 case '+', '-', '*' -> {
-                     if (functionFlag) {
-                         throw new IllegalArgumentException("Wrong");
-                     }
-                     functionFlag = true;
-                     digitFlag = false;
-                 }
-                 case '1','2','3','4','5','6','7',
-                         '8','9','0' -> {
-                     i++;
-                     while (i < expession.length() && Character.isDigit(expession.charAt(i))) {
-                         i++;
-                     }
-                     i--;
-                     if (digitFlag) {
-                         throw new IllegalArgumentException("Wrong");
-                     }
-                     functionFlag = false;
-                     digitFlag = true;
-                 }
-                 case '(', ')' -> {
-                     functionFlag = true;
-                     digitFlag = false;
-                 }
-                 default -> throw new IllegalArgumentException("WRONG");
-             }
+            switch (token) {
+                case ' ' -> {
+                    continue;
+                }
+                case '+', '-', '*' -> {
+                    if (functionFlag) {
+                        throw new IllegalArgumentException("Wrong");
+                    }
+                    functionFlag = true;
+                    digitFlag = false;
+                }
+                case '1', '2', '3', '4', '5', '6', '7',
+                        '8', '9', '0' -> {
+                    i++;
+                    while (i < expession.length() && Character.isDigit(expession.charAt(i))) {
+                        i++;
+                    }
+                    i--;
+                    if (digitFlag) {
+                        throw new IllegalArgumentException("Wrong");
+                    }
+                    functionFlag = false;
+                    digitFlag = true;
+                }
+                case '(' -> {
+                    functionFlag = true;
+                    digitFlag = false;
+                }
+                case ')' -> {
+                    functionFlag = false;
+                    digitFlag = true;
+                }
+                default -> throw new IllegalArgumentException("WRONG");
+            }
         }
         return true;
     }
 
-//1+(7+8)-(3-4*5)*(2*4)+(9)-(16728)*(123*9+2)+((2))
+    //1+(7+8)-(3-4*5)*(2*4)+(9)-(16728)*(123*9+2)+((2))
     public static int functionWeight(char ch) {
         switch (ch) {
-            case '*' -> {return 2;}
-            case '+', '-' -> {return 1;}
+            case '*' -> {
+                return 2;
+            }
+            case '+', '-' -> {
+                return 1;
+            }
             default -> {
                 throw new IllegalArgumentException("functionWeight function collapsed <- for dev");
             }
@@ -57,10 +64,11 @@ public class A12 {
     }
 
 
-
     public static boolean isFunction(char ch) {
         switch (ch) {
-            case '+', '*', '-'-> {return true;}
+            case '+', '*', '-' -> {
+                return true;
+            }
             default -> {
                 return false;
             }
@@ -71,8 +79,10 @@ public class A12 {
     public static boolean allowedCharacters(char ch) {
         switch (ch) {
             case '+', '|', '^', '&', '(', ')',
-                    '1','2','3','4','5','6','7',
-                                    '8','9','0' -> {return true;}
+                    '1', '2', '3', '4', '5', '6', '7',
+                    '8', '9', '0' -> {
+                return true;
+            }
             default -> {
                 return false;
             }
@@ -91,7 +101,7 @@ public class A12 {
     public static int ifJustADidgit(String expression) {
         int leftWhSpIndex = 0;
         int rightWpIndex = expression.length();
-        for (int i = 0 ; i < expression.length(); i++) {
+        for (int i = 0; i < expression.length(); i++) {
             if (expression.charAt(i) == ' ') {
                 leftWhSpIndex++;
             } else {
@@ -99,7 +109,7 @@ public class A12 {
             }
         }
 
-        for (int i = expression.length()-1; i >= 0; i--) {
+        for (int i = expression.length() - 1; i >= 0; i--) {
             if (expression.charAt(i) == ' ') {
                 rightWpIndex--;
             } else {
@@ -125,13 +135,19 @@ public class A12 {
             int indexOfLeastWeightedFun = 0;
             char leastWFunction = 's';
             int leastFunctionWeight = Integer.MAX_VALUE;
+            boolean wasThereAFunctionBefore = false;
 
             for (int i = 0; i < expression.length(); i++) {
                 if (expression.charAt(i) != ' ') {
                     if (isFunction(expression.charAt(i)) && functionWeight(expression.charAt(i)) <= leastFunctionWeight) {
-                        indexOfLeastWeightedFun = i;
-                        leastWFunction = expression.charAt(i);
-                        leastFunctionWeight = functionWeight(expression.charAt(i));
+                        if (!(wasThereAFunctionBefore)) {
+                            indexOfLeastWeightedFun = i;
+                            leastWFunction = expression.charAt(i);
+                            leastFunctionWeight = functionWeight(expression.charAt(i));
+                            wasThereAFunctionBefore = true;
+                        }
+                    } else {
+                        wasThereAFunctionBefore = false;
                     }
                 }
             }
@@ -174,7 +190,7 @@ public class A12 {
                         sb.append(expression.charAt(i));
                         i++;
                     }
-                    sb.deleteCharAt(sb.length()-1);
+                    sb.deleteCharAt(sb.length() - 1);
                     i--;
                     expressionWithoutBrackets.append(evaluater(sb.toString()));
                 } else {
@@ -189,10 +205,10 @@ public class A12 {
     }
 
     public static int mainFunc(String expression) {
-//        if (checkExpressionOnBeingParsable(expression)) {
+        if (checkExpressionOnBeingParsable(expression)) {
             return evaluater(expression);
-//        }
-//        return -99999999;
+        }
+        return -99999999;
     }
 
     public static void main(String[] args) {
