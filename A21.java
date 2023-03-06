@@ -1,32 +1,42 @@
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class A21 {
-
-    public static void step(int[] arr, int index, int[] cubes, int desiredIndex, int recLimit, int recLayer) {
-        if (recLayer == recLimit) {
-            return;
-        }
-        if (index >= arr.length) {
-            return;
-        }
+    public static Set<Integer> step(int[] arr, int index, int[] cubes) {
+        Set<Integer> indexes = new HashSet<>();
         for (int i = 1; i < cubes.length; i++) {
             if (index + cubes[i] < arr.length) {
-                if (arr[index + cubes[i]] == 0) {
+                if (arr[index] + 1 < arr[index + cubes[i]] || arr[index + cubes[i]] == 0) {
                     arr[index + cubes[i]] = arr[index] + 1;
-                } else {
-                    arr[index + cubes[i]] = Math.min(arr[index] + 1, arr[index + cubes[i]]);
                 }
-                if (index + cubes[i] == desiredIndex) {
-                    return;
-                }
-
-                step(arr, index + i, cubes, desiredIndex, recLimit, recLayer+1);
+                indexes.add(index + cubes[i]);
+            } else {
+                break;
             }
         }
+
+        return indexes;
     }
+
+    public static int steps(int[] arr, int[] cubes, int desiredIndex) {
+        Set<Integer> firstIndexes = step(arr, 0, cubes);
+        if (arr[desiredIndex] != 0) {
+            return arr[desiredIndex];
+        }
+        while (true) {
+            Set<Integer> set = new HashSet<>();
+            for (Integer i: firstIndexes) {
+                set.addAll(step(arr, i, cubes));
+                if (arr[desiredIndex] != 0) {
+                    return arr[desiredIndex];
+                }
+            }
+            firstIndexes = set;
+        }
+
+    }
+
     public static void main(String[] args) {
+        long start = System.currentTimeMillis();
         Scanner scanner = new Scanner(System.in);
         int n = scanner.nextInt();
         if (n == 1000000) {
@@ -41,15 +51,7 @@ public class A21 {
         for (int i = 0; i < 100; i++) {
             cubes[i] = i * i * i;
         }
-
-        for (int i = 1; i < 101; i++) {
-            step(array, 0, cubes, n, i, 0);
-            if (array[n] != 0) {
-                System.out.println(array[n]);
-                return;
-            }
-        }
-
-
+        System.out.println(steps(array,  cubes, n));
+        System.out.println(System.currentTimeMillis() - start);
     }
 }
