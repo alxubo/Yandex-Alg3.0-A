@@ -1,14 +1,15 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.*;
 
 public class A19 {
 
-    private static int[] intArr(int len) throws IOException {
-        int[] result = new int[len];
+    private static PriorityQueue<Long> intArr(int len) throws IOException {
+        PriorityQueue<Long> result = new PriorityQueue<>();
 
         for (int i = 0; i < len; i++) {
-            result[i] = readInt();
+            result.add((long) readInt());
         }
         return result;
     }
@@ -36,14 +37,18 @@ public class A19 {
     public static void main(String[] args) {
         try {
             int n = readInt();
-            int[] toSum = intArr(n);
-            long sum = 0;
-            if (n % 2 == 0) {
-                for (int i = 0; i < n; i++) {
-                    sum = sum + toSum[i];
-                }
-                
+
+            PriorityQueue<Long> toSum = intArr(n);
+
+            long counter = 0;
+            long sumOfTwoFirst;
+            while (toSum.size() != 1) {
+                sumOfTwoFirst = toSum.remove() + toSum.remove();
+                counter = counter + sumOfTwoFirst;
+                toSum.add(sumOfTwoFirst);
             }
+
+            System.out.println(String.format("%.2f", counter * 0.05));
 
 
         } catch (IOException e) {

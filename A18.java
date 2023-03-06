@@ -1,9 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.TransferQueue;
 
 public class A18 {
@@ -37,49 +35,57 @@ public class A18 {
         }
     }
 
+    public static int[] findMinAndIndex(ArrayList<Integer> list) {
+        int min = Integer.MAX_VALUE;
+        int index = -1;
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) < min) {
+                min = list.get(i);
+                index = i;
+            }
+        }
+        return new int[]{min, index};
+    }
+
     public static void main(String[] args) {
         try {
             int k = readInt();
             int n = readInt();
+
             int[][] times = new int[n][2];
             for (int i = 0; i < n; i++) {
                 times[i] = intArr(2);
             }
 
+
             int index = 2;
-            TreeMap<Integer, Integer> mapa = new TreeMap<>();
-            if (n == 1) {
-                mapa.put(times[0][1], 1);
-                System.out.println(1);
-                return;
-            }
-            mapa.put(times[0][1], 1);
-            int depo = 0;
+            TreeMap<Integer, ArrayList<Integer>> mapa = new TreeMap<>();
+            mapa.put(times[0][1], new ArrayList<>(List.of(1)));
+
             for (int i = 1; i < n; i++) {
-                Integer lastkey = null;
+                int currentTimeArr = times[i][0];
+                int currentTimeDep = times[i][1];
+
+                int indexWithinArray = -1;
+                Integer timeOfLeavingForTheFirst = -1;
+                int minDepo;
+                ArrayList<Integer> openDepos = new ArrayList<>();
+
                 for (Integer key: mapa.keySet()) {
-                    if (key >= times[i][0]) {
-                        if (lastkey != null) {
-                            depo = mapa.get(lastkey);
-                            System.out.println(depo);
-                            mapa.remove(lastkey);
-                            mapa.put(times[i][1], depo);
-                            break;
-                        } else {
-                            if (index > k) {
-                                System.out.print("0 ");
-                                System.out.print(i+1);
-                                return;
+                    if (key > currentTimeArr) {
+                        if (openDepos.size() != 0) {
+                            for (Integer key1: mapa.keySet()) {
+                                if (mapa.get(key1).contains(Collections.min(openDepos))) {
+
+                                }
                             }
-                            mapa.put(times[i][1], index);
-                            index++;
-                            break;
                         }
+                    } else {
+                        openDepos.addAll(mapa.get(key));
                     }
-                    lastkey = key;
+
                 }
             }
-
 
         } catch (IOException e) {
             System.out.println("Exception during reading the input" + e.getMessage());
