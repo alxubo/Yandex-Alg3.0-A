@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 
@@ -101,58 +102,66 @@ public class A15 {
                     (char) resultOFCheckingForBracket[1] +
                     xml.substring(resultOFCheckingForBracket[0] + 1);
         }
+        return "he";
 
-        boolean isOpenFlag;
-        Deque<StringBuilder> stack = new ArrayDeque<>();
 
-        for (int i = 0; i < xml.length(); i++) {
-            char token = xml.charAt(i);
-            if (token == '<') {
-                StringBuilder sb = new StringBuilder();
-                sb.append('<');
-                i++;
-                if (xml.charAt(i) == '/') {
-                    isOpenFlag = false;
-                } else {
-                    isOpenFlag = true;
-                }
-                while (xml.charAt(i) != '>') {
-                    sb.append(xml.charAt(i));
-                    i++;
-                }
-                sb.append('>');
-
-                if (isOpenFlag) {
-                    stack.addFirst(sb);
-                } else {
-
-                    if (sb.length() == 3) {
-                        // значит что проблемма тут и надо испарвить на значение внутри следующего
-                    }
-
-                    if (stack.isEmpty()) {
-                        return "FUCK";
-                    }
-                    int indexInSb = sbEqualsWithousSecChar(stack.getFirst(), sb);
-                    if (indexInSb == -1) {
-                        stack.removeFirst();
-                    } else {
-                        return xml.substring(0, i - sb.length() + indexInSb + 1) +
-                                (char) stack.getFirst().charAt(indexInSb-1) +
-                                xml.substring(i-sb.length() + indexInSb + 2);
-                    }
-                }
-            }
-        }
-        if (!(stack.isEmpty())) {
-            int indexOfSbInStack = (stack.size())/2 + 1;
-        } else {
-            return xml;
-        }
-
-        return "HHHHHHHHHHHHHHH";
+//        boolean isOpenFlag;
+//        Deque<StringBuilder> stack = new ArrayDeque<>();
+//
+//        for (int i = 0; i < xml.length(); i++) {
+//            char token = xml.charAt(i);
+//            if (token == '<') {
+//                StringBuilder sb = new StringBuilder();
+//                sb.append('<');
+//                i++;
+//                if (xml.charAt(i) == '/') {
+//                    isOpenFlag = false;
+//                } else {
+//                    isOpenFlag = true;
+//                }
+//                while (xml.charAt(i) != '>') {
+//                    sb.append(xml.charAt(i));
+//                    i++;
+//                }
+//                sb.append('>');
+//
+//                if (isOpenFlag) {
+//                    stack.addFirst(sb);
+//                } else {
+//
+//                    if (sb.length() == 3) {
+//                        // значит что проблемма тут и надо испарвить на значение внутри следующего
+//                    }
+//
+//                    if (stack.isEmpty()) {
+//                        return "FUCK";
+//                    }
+//                    int indexInSb = sbEqualsWithousSecChar(stack.getFirst(), sb);
+//                    if (indexInSb == -1) {
+//                        stack.removeFirst();
+//                    } else {
+//                        return xml.substring(0, i - sb.length() + indexInSb + 1) +
+//                                (char) stack.getFirst().charAt(indexInSb-1) +
+//                                xml.substring(i-sb.length() + indexInSb + 2);
+//                    }
+//                }
+//            }
+//        }
+//        if (!(stack.isEmpty())) {
+//            int indexOfSbInStack = (stack.size())/2 + 1;
+//        } else {
+//            return xml;
+//        }
+//
+//        return "HHHHHHHHHHHHHHH";
     }
 
+//    public static ArrayList<String> tokenizer(String xml) {
+//        for (int i = 0; i < i)
+//    }
+//    public static int checkForProblems(ArrayList<String> tokenised) {
+//        for (int i = 0; )
+//    }
     public static void main(String[] args) {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
