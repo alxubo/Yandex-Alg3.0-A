@@ -1,8 +1,8 @@
 import java.util.*;
 
 public class A21 {
-    public static Set<Integer> step(int[] arr, int index, int[] cubes) {
-        Set<Integer> indexes = new HashSet<>();
+    public static void step(int[] arr, int index, int[] cubes, Set<Integer> indexes) {
+//        Set<Integer> indexes = new HashSet<>();
         for (int i = 1; i < cubes.length; i++) {
             if (index + cubes[i] < arr.length) {
                 if (arr[index] + 1 < arr[index + cubes[i]] || arr[index + cubes[i]] == 0) {
@@ -14,18 +14,19 @@ public class A21 {
             }
         }
 
-        return indexes;
+//        return indexes;
     }
 
     public static int steps(int[] arr, int[] cubes, int desiredIndex) {
-        Set<Integer> firstIndexes = step(arr, 0, cubes);
+        Set<Integer> firstIndexes = new HashSet<>();
+        step(arr, 0, cubes, firstIndexes);
         if (arr[desiredIndex] != 0) {
             return arr[desiredIndex];
         }
         while (true) {
             Set<Integer> set = new HashSet<>();
             for (Integer i: firstIndexes) {
-                set.addAll(step(arr, i, cubes));
+                step(arr, i, cubes, set);
                 if (arr[desiredIndex] != 0) {
                     return arr[desiredIndex];
                 }
@@ -36,7 +37,7 @@ public class A21 {
     }
 
     public static void main(String[] args) {
-        long start = System.currentTimeMillis();
+//        long start = System.currentTimeMillis();
         Scanner scanner = new Scanner(System.in);
         int n = scanner.nextInt();
         if (n == 1000000) {
@@ -52,6 +53,6 @@ public class A21 {
             cubes[i] = i * i * i;
         }
         System.out.println(steps(array,  cubes, n));
-        System.out.println(System.currentTimeMillis() - start);
+//        System.out.println(System.currentTimeMillis() - start);
     }
 }
