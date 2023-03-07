@@ -32,50 +32,50 @@ public class A14 {
 
             int[] gistGram = intArr(n);
 
-            ArrayList<int[]> collWthItsLimits = new ArrayList<>();
+            int[][] collWithIndexes = new int[gistGram.length][3];
+            // index -> [height, leftLim, rightLim]
 
-            Deque<Integer> stackRight = new ArrayDeque<>();
+            Deque<int[]> stackForRight = new ArrayDeque<>();
 
+
+            int[] indexAndHeightForRight;
             for (int i = 0; i < gistGram.length; i++) {
-                while (!stackRight.isEmpty() && stackRight.getFirst() > gistGram[i]) {
-                    collWthItsLimits.add(new int[]{stackRight.getFirst(), 0, i});
-                    stackRight.removeFirst();
+                while (!stackForRight.isEmpty() && stackForRight.getFirst()[1] > gistGram[i]) {
+                    indexAndHeightForRight = stackForRight.removeFirst();
+                    collWithIndexes[indexAndHeightForRight[0]] = new int[]{indexAndHeightForRight[1], 0, i}; // i - index of lower
                 }
-                stackRight.addFirst(gistGram[i]);
-            }
-            while (!stackRight.isEmpty()) {
-                collWthItsLimits.add(new int[]{stackRight.removeFirst(), 0, gistGram.length});
+                stackForRight.addFirst(new int[]{i, gistGram[i]});
             }
 
+            while (!stackForRight.isEmpty()) {
+                indexAndHeightForRight = stackForRight.removeFirst();
+                collWithIndexes[indexAndHeightForRight[0]] = new int[]{indexAndHeightForRight[1], 0, gistGram.length}; // i - index of lower
+            }
 
-            Deque<Integer> stackLeft = new ArrayDeque<>();
-            int[] fromMap;
+            Deque<int[]> stackForLeft = new ArrayDeque<>();
+
+            int[] indexAndHeightForLeft;
             for (int i = gistGram.length-1; i >= 0; i--) {
-                while (!stackLeft.isEmpty() && stackLeft.getFirst() > gistGram[i]) {
-                    fromMap = collWthItsLimits.get();
-                    fromMap[0] = i;
-                    collWthItsLimits.add(stackLeft.getFirst(), fromMap);
-                    stackLeft.removeFirst();
+                while (!stackForLeft.isEmpty() && stackForLeft.getFirst()[1] > gistGram[i]) {
+                    indexAndHeightForLeft = stackForLeft.removeFirst();
+                    collWithIndexes[indexAndHeightForLeft[0]][1] = i+1; // i - index of lower
                 }
-                stackLeft.addFirst(gistGram[i]);
-            }
-            while (!stackLeft.isEmpty()) {
-                fromMap = collWthItsLimits.get(stackLeft.getFirst());
-                fromMap[0] = -1;
-                collWthItsLimits.put(stackLeft.getFirst(), fromMap);
-                collWthItsLimits.put(stackLeft.removeFirst(), new int[]{0, gistGram.length});
-            }
-            int max = -1;
-            int[] toCount;
-            for (Integer i: collWthItsLimits.keySet()) {
-                toCount = collWthItsLimits.get(i);
-                if (max < (toCount[1] - 1 - toCount[0]) * i) {
-                    max = (toCount[1] - 1 - toCount[0]) * i;
-                }
+                stackForLeft.addFirst(new int[]{i, gistGram[i]});
             }
 
+            while (!stackForRight.isEmpty()) {
+                indexAndHeightForRight = stackForRight.removeFirst();
+                collWithIndexes[indexAndHeightForRight[0]][1] = 1; // i - index of lower
+            }
+
+            long max = -1;
+
+            for (int[] arr: collWithIndexes) {
+                if (max <  ((long) arr[2] -  (long) arr[1]) * (long) arr[0]) {
+                    max = ((long)arr[2] - (long)arr[1]) * (long)arr[0];
+                }
+            }
             System.out.println(max);
-
 
         } catch (IOException e) {
             System.out.println("Exception during reading the input" + e.getMessage());
